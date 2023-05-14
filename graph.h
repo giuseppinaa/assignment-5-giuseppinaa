@@ -1,6 +1,6 @@
 // Name:Giuseppina Pullara
 // Assignment-5
-// Professor: Ioannis Stamos#include <iostream>
+// Professor: Ioannis Stamos
 #ifndef STUDENT_GRAPH
 #define STUDENT_GRAPH
 
