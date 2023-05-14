@@ -11,32 +11,32 @@
 #include <cfloat> 
 
 using namespace std;
-
+//function to create a graph from a text file
 template <typename point>
 void ReadGraph(string const & readfile, Graph<point> & graphpoint){
-    string linetxt;
-    point CurrentVertex,NextVertex;
-    double WeightVertex;
+    string linetxt;//used to read text lines of graph txt
+    point CurrentVertex,NextVertex;//given two point objects to use for vertices
+    double WeightVertex; //aariable for weight of node
 
-    ifstream file(readfile);
+    ifstream file(readfile); //open file
     if(!file){
        cerr << "error!\n"; //show error if cant read
         abort();
     }
     
     string line;
-    while(getline(file, line)) {
+    while(getline(file, line)) {//getting the first line 
         if(line.empty()) {
             continue;
         }
         stringstream ss(line);
-        ss >> CurrentVertex;
-        graphpoint.vertex(CurrentVertex);
-        while(ss >> NextVertex && ss >> WeightVertex){
+        ss >> CurrentVertex;//read current vertex
+        graphpoint.vertex(CurrentVertex);//add current vertex to the graph
+        while(ss >> NextVertex && ss >> WeightVertex){//read the next vertex and its weight and connect to current vertex
             graphpoint.connect(CurrentVertex, NextVertex, WeightVertex);//connect vertex
         }
     }
-    file.close();//close at the end
+    file.close();//close file
  }
 
 
@@ -72,9 +72,9 @@ void CheckGraph(string const& read_file, Graph<point>& graphP) {
 int graphTestDriver(int argc, char **argv) {
   
     
-    Graph<int> graphpoint;//declare as int to take for second param
-    ReadGraph<int>(argv[1], graphpoint);//calll function
-    CheckGraph<int>(argv[2], graphpoint);//call load graph
+    Graph<int> graphpoint;
+    ReadGraph<int>(argv[1], graphpoint);//read graph
+    CheckGraph<int>(argv[2], graphpoint);//check graph
     
     // Begin your code here. Feel free to add any helper functions or classes you need,
     // as long as we only have to call this function to run the specified assignment.
