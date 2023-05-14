@@ -17,11 +17,12 @@
 using namespace std; 
 template<typename point>
  class Graph;
-
+// class representing a vertex node in the graph
 template <typename point>
 class PointVertexNode{
 public:
 	friend class Graph<point>;
+	// constructor with a storeKey parameter
 	PointVertexNode()= default;
 PointVertexNode(point storeKey) : storeIt(storeKey), 
         areaDist(DBL_MAX), previousPath(nullptr) {
@@ -33,22 +34,22 @@ PointVertexNode(point storeKey) : storeIt(storeKey),
 
 	double AreaDistance() const {
 		double dummy = areaDist;
-        return dummy; //return distancethe graph map from node to node
+        return dummy; // return distance from node to node
 	}
 private:
 	list<pair< PointVertexNode<point>*, double>> AdjacentNodes; //set variables and objects to private
-	point storeIt;
+	point storeIt;//the point stored in the vertex node
 	double areaDist;//area distance of the graph
 	bool checkPoint, startingPointVertex;
-	PointVertexNode<point> * previousPath; //pointer to prev path
+	PointVertexNode<point> * previousPath; //pointer to previous path
 };
 
 template <typename point>
 class VerticesCheck{
  public:
  	bool operator()(const PointVertexNode<point> *lefths, const PointVertexNode<point> * righths) const{
- 		//check betweenleft and right distance to trickle down 
-		auto checkleft = lefths->AreaDistance() > righths->AreaDistance();//able to check because of public function
+ 		
+		auto checkleft = lefths->AreaDistance() > righths->AreaDistance();
 
  		return checkleft; 
  	}
@@ -60,11 +61,11 @@ public:
 
 	unordered_map<point, PointVertexNode<point>> NodeMapping;	//unorder_map
 
-	void ResetNodeOfVertex(PointVertexNode<point> vert){ //resets all points
-		vert.previousPath = NULL; //resets previous path of the vertex
+	void ResetNodeOfVertex(PointVertexNode<point> vert){//reseting properties of a vertex node
+		vert.previousPath = NULL; //reset previous path of the vertex
 		vert.checkPoint = false; 
 		vert.areaDist = DBL_MAX;  //the distance of the graph
-		vert.startingPointVertex = false; //reset starting point is false
+		vert.startingPointVertex = false;//reset starting point false
 		
 		
 	}
@@ -75,7 +76,7 @@ public:
 		if(find ==end){ //check from point a to the end for vertex node in the graph map
 			NodeMapping[vertexA] = PointVertexNode<point>(vertexA); //assign it to
 		}
-	}
+	}//connect two vertices in the graph with an edge and weight
 	void connect(point vA, point vB, double VertexWeight){
     auto nds=NodeMapping.find(vA);
     auto nB=NodeMapping.find(vB);
@@ -87,10 +88,10 @@ public:
     if(nB == end){//find for vertex b until end of graph map //connects them
         NodeMapping[vB] = PointVertexNode<point>(vB);
     }
-    PointVertexNode<point>* nodeA = &NodeMapping[vA]; //get pointer to node A
-    PointVertexNode<point>* nodeB = &NodeMapping[vB]; //get pointer to node B
+    PointVertexNode<point>* nodeA = &NodeMapping[vA]; //getting pointer to node A
+    PointVertexNode<point>* nodeB = &NodeMapping[vB]; //getting pointer to node B
     
-    // Check if there is already a connection between the two nodes
+    //check if the connection already exists and update the weight if so
     for (auto it = nodeA->AdjacentNodes.begin(); it != nodeA->AdjacentNodes.end(); ++it) {
         if (it->first == nodeB) {
             // Update the weight of the existing connection
@@ -99,12 +100,12 @@ public:
         }
     }
 
-    // If no connection exists, create a new one
+     //if no connection exists, create a new one
     pair<PointVertexNode<point>*, double> CreatingNewConnection = make_pair(nodeB, VertexWeight);
     nodeA->AdjacentNodes.push_back(CreatingNewConnection);
 }
 
-
+	//checking the weight (distance) between two nodes in the graph
 	double CheckWeight(point nodeA, point nodeB) {
     auto search = NodeMapping.find(nodeA);
     auto end_at = NodeMapping.end();
@@ -118,17 +119,17 @@ public:
     return DBL_MAX;
 }
 
-
+	//checking if the graph contains a vertex
 	bool Contains(point VertexPointNode){
 		auto contained=NodeMapping.find(VertexPointNode); //check if the vertex nds are contained from start of map to end in the graph
 		auto checkuntilend=NodeMapping.end();
 		return contained != checkuntilend;
 	}
-	
+	//implement Dijkstra's algorithm to find the shortest path in the graph
 	void DijkstraAlgo(point start) {
-    priority_queue<PointVertexNode<point> *, vector<PointVertexNode<point> *>, VerticesCheck<point>> areaDistqueue; // important to use to go through priority queue
+    priority_queue<PointVertexNode<point> *, vector<PointVertexNode<point> *>, VerticesCheck<point>> areaDistqueue; // important to use to go thru priority queue
     
-    // Reset all PointVertexNodes in the map
+    //reset all PointVertexNodes in the map
     for (auto& kvp : NodeMapping) {
         ResetNodeOfVertex(kvp.second);
     }
@@ -159,14 +160,14 @@ public:
     }
 }
 
-
-
+	
+	//print the shortest path from a given node
 	void path(const point & node_vert) {
 		double max=DBL_MAX; //max val
 		cout << node_vert << ": ";
 		PointVertexNode<point> * fillin = & NodeMapping[node_vert];
 		if(fillin->startingPointVertex){
-			cout << fillin->storeIt << " cost: 0.0" << endl;//default zero if starting point
+			cout << fillin->storeIt << " cost: 0.0" << endl;//default 0.0 starting point
 			return;
 		}
 		
@@ -174,11 +175,11 @@ public:
 			cout << "not_possible" << endl; //print not possible if cant be connected
 		}else{
 			shortest_path(fillin);
-			cout << "cost: " << fillin->areaDist  << endl;} //print the cost of the edge from vert to vert
+			cout << "cost: " << fillin->areaDist  << endl;} //print the cost of the edge from vertex to vertex
 	}
 
 	void shortest_path(PointVertexNode<point>*& node_vert) {
-    if (node_vert->previousPath == nullptr) { // if null, print the current node
+    if (node_vert->previousPath == nullptr) { // if null print the current node
         cout << node_vert->storeIt << " ";
     }
     else {
